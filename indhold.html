@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="da">
+
+<head>
+    <meta charset="utf-8">
+    <title>Document</title>
+    <link type="text/css" href="#lav_nycss" rel="stylesheet">
+    <style>
+        body {
+            margin: 0 auto;
+        }
+
+        .templatemodtager {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            max-width: 100%;
+            margin: 0 auto;
+            grid-gap: 10px;
+        }
+
+        .person {
+            grid-row: 4;
+            /*grid-column: 4/2;*/
+            border: 1px solid #666;
+            padding: 10px;
+            background: #fff8ea;
+
+        }
+
+        .person:nth-child(odd) {
+            background: #fff8ea;
+            ;
+        }
+
+        @media screen and (max-width:768px) {
+            .templatemodtager {
+                max-width: 100%;
+                grid-template-columns: 1fr;
+            }
+        }
+
+        h1 {
+            font-family: cursive;
+            text-align: center;
+            color: saddlebrown;
+        }
+
+        p.pris {
+            text-align: center;
+            border: 1px solid saddlebrown;
+            /* background: saddlebrown;*/
+            width: 100px;
+            float: right;
+            color: saddlebrown;
+            padding: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <img src="#img/red_star.svg" alt="">
+    </header>
+
+    <div class="templatemodtager"></div>
+    <template class="mytemplate">
+        <div class="person">
+            <h1 class="navn"></h1> <img class="billede" src="" alt="">
+            <p class="kortbeskrivelse"></p>
+            <p class="pris"></p>
+        </div>
+    </template>
+    <script>
+        let personer;
+        document.addEventListener("DOMContentLoaded", loadJson);
+        let modtager = document.querySelector(".templatemodtager");
+        let template = document.querySelector(".mytemplate");
+        async function loadJson() {
+            let minListe = await fetch("menu.json");
+            personer = await minListe.json();
+            console.log(personer);
+            visPersoner(personer);
+        }
+
+        function visPersoner(personer) {
+            personer.forEach(hverPerson => {
+                let klon = template.cloneNode(true).content;
+                klon.querySelector(".navn").textContent = hverPerson.navn;
+                klon.querySelector(".billede").setAttribute("src", "imgs/small/" + hverPerson.billede + "-sm.jpg");
+                klon.querySelector(".billede").alt = "billede af" + hverPerson.billede;
+                klon.querySelector(".kortbeskrivelse").textContent = hverPerson.kortbeskrivelse;
+                klon.querySelector(".pris").textContent = hverPerson.pris + (" kr.");
+                modtager.appendChild(klon);
+            })
+        }
+    </script>
+</body>
+
+</html>
